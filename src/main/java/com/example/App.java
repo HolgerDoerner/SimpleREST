@@ -1,9 +1,8 @@
 package com.example;
 
-import static spark.Spark.after;
-import static spark.Spark.get;
+import static spark.Spark.*;
 
-import com.example.bean.UserBean;
+import com.example.bean.EmployeeBean;
 import com.google.gson.Gson;
 
 /**
@@ -11,7 +10,7 @@ import com.google.gson.Gson;
  */
 public final class App {
     private static Gson gson = new Gson();
-    private static UserService service = new MockUserService();
+    private static UserService service = new MockEmployeeService();
 
     /**
      * Application entry point
@@ -19,21 +18,23 @@ public final class App {
      */
     public static void main(String[] args) {
         
-        // returns a list of all users
-        get("/users", (request, response) -> service.getUsers(), gson::toJson);
+        // returns a list of all employees
+        get("/users", (request, response) -> service.getEmployees(), gson::toJson);
 
-        // returns a single user by its ID or an empty new one if ID is not found
+        // returns a single employee by its ID or an empty new one if ID is not found
         get("/users/:id",
-            (request, response) -> service.getUserById(request.params("id")).orElse(new UserBean()),
+            (request, response) -> service.getEmployeeById(Integer.parseInt(request.params(":id"))),
             gson::toJson);
+
+        // delete a employee from database
+        delete("/users/:id",
+            (request, response) -> service.deleteEmployee(Integer.parseInt(request.params(":id"))),
+            gson::toJson);
+        
+        // update an employee
+        // post("/users/:employee", (request, response) -> service.updateEmployee(request.params(":employee")));
 
         // set default content-type to json for all endpoints
         after((request, response) -> response.header("Content-type", "application/json"));
     }
-}
-
-class Test {
-    public int id = 1;
-    public String name = "Hans";
-    public String last = "Wurst";
 }

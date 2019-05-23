@@ -1,11 +1,12 @@
 package com.example;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.example.bean.UserBean;
+import com.example.bean.EmployeeBean;
 
 public interface UserService {
-    public List<UserBean> getUsers();
-    public Optional<UserBean> getUserById(String id);
+    public List<EmployeeBean> getEmployees();
+    public EmployeeBean getEmployeeById(Integer id);
+    public EmployeeBean deleteEmployee(Integer id);
+    public EmployeeBean updateEmployee(EmployeeBean employee);
 }
