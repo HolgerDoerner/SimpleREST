@@ -2,7 +2,6 @@ package com.example;
 
 import static spark.Spark.*;
 
-import com.example.bean.EmployeeBean;
 import com.google.gson.Gson;
 
 /**
