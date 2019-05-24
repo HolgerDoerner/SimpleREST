@@ -1,7 +1,11 @@
 package com.example.bean;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class EmployeeBean implements Serializable {
@@ -29,15 +33,8 @@ public class EmployeeBean implements Serializable {
         this.setEmail("");
     }
 
-    public EmployeeBean(Integer id,
-                        String firstName,
-                        String lastName,
-                        LocalDate birthDate,
-                        String gender,
-                        String company,
-                        String department,
-                        String employerId,
-                        String email) {
+    public EmployeeBean(Integer id, String firstName, String lastName, LocalDate birthDate, String gender,
+            String company, String department, String employerId, String email) {
         this.setId(id);
         this.setFirstName(firstName);
         this.setLastName(lastName);
@@ -71,6 +68,76 @@ public class EmployeeBean implements Serializable {
         }
 
         return true;
+    }
+
+    public static EmployeeBean ofSingleResult(ResultSet res) throws SQLException {
+        if (res.next()) {
+            return new EmployeeBean(res.getInt(1),
+                                    res.getString(2),
+                                    res.getString(3),
+                                    LocalDate.parse(res.getString(4)),
+                                    res.getString(5),
+                                    res.getString(6),
+                                    res.getString(7),
+                                    res.getString(8),
+                                    res.getString(9));
+        }
+
+        return new EmployeeBean();
+    }
+
+    public static List<EmployeeBean> ofResultSet(ResultSet res) throws SQLException {
+        List<EmployeeBean> list = new ArrayList<>();
+
+        while (res.next()) {
+            list.add(new EmployeeBean(res.getInt(1),
+                                    res.getString(2),
+                                    res.getString(3),
+                                    LocalDate.parse(res.getString(4)),
+                                    res.getString(5),
+                                    res.getString(6),
+                                    res.getString(7),
+                                    res.getString(8),
+                                    res.getString(9)));
+        }
+
+        return list;
+    }
+
+    public EmployeeBean update(EmployeeBean other) {
+        if (!other.getFirstName().isEmpty()) {
+            this.setFirstName(other.getFirstName());
+        }
+
+        if (!other.getLastName().isEmpty()) {
+            this.setLastName(other.getLastName());
+        }
+
+        if (!Objects.equals(this.getBirthDate(), other.getBirthDate())) {
+            this.setBirthDate(other.getBirthDate());
+        }
+
+        if (!other.getGender().isEmpty()) {
+            this.setGender(other.getGender());
+        }
+
+        if (!other.getCompany().isEmpty()) {
+            this.setCompany(other.getCompany());
+        }
+
+        if (!other.getDepartment().isEmpty()) {
+            this.setDepartment(other.getDepartment());
+        }
+
+        if (!other.getEmployerId().isEmpty()) {
+            this.setEmployerId(other.getEmployerId());
+        }
+
+        if (!other.getEmail().isEmpty()) {
+            this.setEmail(other.getEmail());
+        }
+
+        return this;
     }
 
     public LocalDate getBirthDate() {
