@@ -40,7 +40,7 @@ public final class App {
         // returns a list of all employees
         get("/users", (request, response) -> service.getEmployees(), gson::toJson);
 
-        // returns a single employee by its ID or an empty new one if ID is not found
+        // returns a single employee by its ID or an empty list if ID is not found.
         get("/users/:id",
             (request, response) -> service.getEmployeeById(Integer.parseInt(request.params(":id"))),
             gson::toJson);

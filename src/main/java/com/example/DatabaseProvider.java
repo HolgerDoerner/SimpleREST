@@ -30,11 +30,8 @@ public class DatabaseProvider {
                     db = Server.createTcpServer().start();
 
                     ds.setURL("jdbc:h2:mem:mockdb;DB_CLOSE_DELAY=-1");
-                    // ds.setUser("user");
-                    // ds.setPassword("password");
 
                     try (Connection conn = ds.getConnection(); Statement stmt = conn.createStatement()) {
-
                         Files.lines(Paths.get("mock_data.sql")).filter(line -> !line.isEmpty()).forEach(line -> {
                             try {
                                 stmt.executeUpdate(line);
