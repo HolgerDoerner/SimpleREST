@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import com.example.bean.EmployeeBean;
 import com.google.gson.Gson;
 
-import spark.Service.StaticFiles;
-
 /**
  * Main application class
  */
