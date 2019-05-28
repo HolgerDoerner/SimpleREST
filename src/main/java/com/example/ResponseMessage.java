@@ -1,11 +1,11 @@
 package com.example;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class ResponseMessage <T> {
     private String status;
-    private LocalDateTime timeStamp;
+    private String timeStamp;
+    private Integer count;
     private Collection<T> msg;
 
     public String getStatus() {
@@ -16,12 +16,20 @@ public class ResponseMessage <T> {
         this.status = status;
     }
 
-    public LocalDateTime getTimeStamp() {
+    public String getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(LocalDateTime timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     public Collection<T> getMsg() {

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.example.bean.EmployeeBean;
 
@@ -14,18 +15,20 @@ public interface RestService {
     public default ResponseMessage<EmployeeBean> getEmployees() {
         ResponseMessage<EmployeeBean> message = new ResponseMessage<>();
 
-        try (Connection conn = DatabaseUtil.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet res = stmt.executeQuery("select * from employees;")) {
+        try (Connection conn = DatabaseProvider.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet res = stmt.executeQuery("select * from employees;")) {
 
-            message.setTimeStamp(LocalDateTime.now());
-            message.setStatus("SUCCESS");
-            message.setMsg(EmployeeBean.ofResultSet(res));
+            message.setTimeStamp(LocalDateTime.now().toString());
+            message.setStatus("Ok");
+            List<EmployeeBean> tmp = EmployeeBean.ofResultSet(res);
+            message.setCount(tmp.size());
+            message.setMsg(tmp);
         } catch (SQLException e) {
             e.printStackTrace();
 
-            message.setTimeStamp(LocalDateTime.now());
-            message.setStatus("ERROR");
+            message.setTimeStamp(LocalDateTime.now().toString());
+            message.setStatus("Error");
             message.setMsg(new ArrayList<>());
         }
 
@@ -36,23 +39,28 @@ public interface RestService {
         ResponseMessage<EmployeeBean> message = new ResponseMessage<>();
         String sql = "select * from employees where id=?;";
 
-        try (Connection conn = DatabaseUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+        try (Connection conn = DatabaseProvider.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, id);
             ResultSet res = stmt.executeQuery();
 
-            ArrayList<EmployeeBean> tmp = new ArrayList<>();
-            tmp.add(EmployeeBean.ofSingleResult(res));
+            EmployeeBean e = EmployeeBean.ofSingleResult(res);
 
-            message.setTimeStamp(LocalDateTime.now());
-            message.setStatus("OK");
+            ArrayList<EmployeeBean> tmp = new ArrayList<>();
+
+            if (e.getId() != -1) {
+                tmp.add(e);
+            }
+
+            message.setTimeStamp(LocalDateTime.now().toString());
+            message.setStatus("Ok");
             message.setMsg(tmp);
+            message.setCount(tmp.size());
         } catch (SQLException e) {
             e.printStackTrace();
 
-            message.setTimeStamp(LocalDateTime.now());
-            message.setStatus("ERROR");
+            message.setTimeStamp(LocalDateTime.now().toString());
+            message.setStatus("Error");
             message.setMsg(new ArrayList<>());
         }
 
@@ -63,19 +71,18 @@ public interface RestService {
         ResponseMessage<EmployeeBean> message = new ResponseMessage<>();
         String sql = "delete from employees where id=?;";
 
-        try (Connection conn = DatabaseUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseProvider.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
 
-            message.setTimeStamp(LocalDateTime.now());
-            message.setStatus("deleted");
+            message.setTimeStamp(LocalDateTime.now().toString());
+            message.setStatus("Ok");
             message.setMsg(new ArrayList<>());
         } catch (SQLException e) {
             e.printStackTrace();
 
-            message.setTimeStamp(LocalDateTime.now());
-            message.setStatus("error");
+            message.setTimeStamp(LocalDateTime.now().toString());
+            message.setStatus("Error");
             message.setMsg(new ArrayList<>());
         }
 
@@ -85,11 +92,10 @@ public interface RestService {
     public default ResponseMessage<EmployeeBean> updateEmployee(EmployeeBean employee) {
         ResponseMessage<EmployeeBean> message = new ResponseMessage<>();
         EmployeeBean current = new EmployeeBean();
-        
+
         String sql1 = "select * from employees where id=?;";
-        try (Connection conn = DatabaseUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql1)) {
-            
+        try (Connection conn = DatabaseProvider.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql1)) {
+
             stmt.setInt(1, employee.getId());
             ResultSet res = stmt.executeQuery();
 
@@ -97,21 +103,13 @@ public interface RestService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        current.update(employee);
-        
-        String sql2 = "update employees set firstName=?,"
-                    + "lastName=?,"
-                    + "birthDate=?,"
-                    + "gender=?,"
-                    + "company=?,"
-                    + "department=?,"
-                    + "employerId=?,"
-                    + "email=? "
-                    + "where id=?;";
 
-        try (Connection conn = DatabaseUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql2)) {
+        current.update(employee);
+
+        String sql2 = "update employees set firstName=?," + "lastName=?," + "birthDate=?," + "gender=?," + "company=?,"
+                + "department=?," + "employerId=?," + "email=? " + "where id=?;";
+
+        try (Connection conn = DatabaseProvider.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql2)) {
 
             stmt.setString(1, current.getFirstName());
             stmt.setString(2, current.getLastName());
@@ -125,12 +123,13 @@ public interface RestService {
 
             stmt.executeUpdate();
 
-            message.setTimeStamp(LocalDateTime.now());
+            message.setTimeStamp(LocalDateTime.now().toString());
             message.setStatus("Ok");
 
             ArrayList<EmployeeBean> tmp = new ArrayList<>();
             tmp.add(current);
             message.setMsg(tmp);
+            message.setCount(tmp.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }

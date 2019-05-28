@@ -7,22 +7,27 @@ import java.sql.SQLException;
 import com.example.bean.EmployeeBean;
 import com.google.gson.Gson;
 
+import spark.Service.StaticFiles;
+
 /**
  * Main application class
  */
 public final class App {
-    private static Gson gson = new Gson();
-    private static RestService service;
+    private static final RestService service;
+
+    private static final Gson gson = new Gson();
 
     static {
         try {
-            DatabaseUtil.initDatabase();
-
-            // Replace this with yout own implementation of RestService.
-            service = new MyRestService();
+            DatabaseProvider.initDatabase();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error setting up database: " + e.getMessage());
+            System.err.println("Exiting...");
+            System.exit(1);
         }
+
+        // Replace this with yout own implementation of RestService.
+        service = new MyRestService();
     }
 
     /**
@@ -32,7 +37,6 @@ public final class App {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        
         // returns a list of all employees
         get("/users", (request, response) -> service.getEmployees(), gson::toJson);
 
@@ -52,7 +56,7 @@ public final class App {
             (request, response) -> service.updateEmployee(gson.fromJson(request.body(), EmployeeBean.class)),
             gson::toJson);
 
-        // set default content-type to json for all endpoints
+        // set default content-type to json for response from all endpoints.
         after((request, response) -> response.header("Content-type", "application/json"));
     }
 }
