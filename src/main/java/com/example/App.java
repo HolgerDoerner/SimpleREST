@@ -35,6 +35,8 @@ public final class App {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        staticFiles.location("/html");
+
         // returns a list of all employees
         get("/users", (request, response) -> service.getEmployees(), gson::toJson);
 
