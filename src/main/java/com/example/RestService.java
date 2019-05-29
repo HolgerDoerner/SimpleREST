@@ -73,10 +73,10 @@ public interface RestService {
 
         try (Connection conn = DatabaseProvider.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            stmt.executeUpdate();
+            int count = stmt.executeUpdate();
 
             message.setTimeStamp(LocalDateTime.now().toString());
-            message.setStatus("Ok");
+            message.setStatus(count == 1 ? "Deleted" : "Unknown");
             message.setMsg(new ArrayList<>());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,6 +84,50 @@ public interface RestService {
             message.setTimeStamp(LocalDateTime.now().toString());
             message.setStatus("Error");
             message.setMsg(new ArrayList<>());
+        }
+
+        return message;
+    }
+
+    public default ResponseMessage<EmployeeBean> addEmployee(EmployeeBean employee) {
+        ResponseMessage<EmployeeBean> message = new ResponseMessage<>();
+
+        if (employee.getId() > 0) {
+            updateEmployee(employee);
+        } else {
+            String sql = "insert into employees"
+                    + "(firstName, lastName, birthDate, gender, company, department, employerId, email)" + "values"
+                    + "(?, ?, ?, ?, ?, ?, ?, ?);";
+
+            try (Connection conn = DatabaseProvider.getConnection();
+                    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+                stmt.setString(1, employee.getFirstName());
+                stmt.setString(2, employee.getLastName());
+                stmt.setString(3, employee.getBirthDate().toString());
+                stmt.setString(4, employee.getGender());
+                stmt.setString(5, employee.getCompany());
+                stmt.setString(6, employee.getDepartment());
+                stmt.setString(7, employee.getEmployerId());
+                stmt.setString(8, employee.getEmail());
+
+                stmt.executeUpdate();
+
+                ResultSet key = stmt.getGeneratedKeys();
+                key.next();
+
+                employee.setId(key.getInt(1));
+
+                message.setTimeStamp(LocalDateTime.now().toString());
+                message.setStatus("Ok");
+
+                ArrayList<EmployeeBean> tmp = new ArrayList<>();
+                tmp.add(employee);
+                message.setMsg(tmp);
+                message.setCount(tmp.size());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return message;

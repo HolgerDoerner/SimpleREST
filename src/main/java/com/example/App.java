@@ -50,10 +50,10 @@ public final class App {
             (request, response) -> service.deleteEmployee(Integer.parseInt(request.params(":id"))),
             gson::toJson);
         
-        // update an employee
+        // add/update an employee
         post("/users",
             "application/json",
-            (request, response) -> service.updateEmployee(gson.fromJson(request.body(), EmployeeBean.class)),
+            (request, response) -> service.addEmployee(gson.fromJson(request.body(), EmployeeBean.class)),
             gson::toJson);
 
         // set default content-type to json for response from all endpoints.

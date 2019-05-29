@@ -11,7 +11,123 @@
 </head>
 
 <body>
-    <table id="content" style="width: 100%"></table>
+    <div id="tab" class="tab">
+        <button class="tablinks" onclick="showInput(event, 'employee_list')" id="default">List Employee(s)</button>
+        <button class="tablinks" onclick="showInput(event, 'employee_add')">Add Employee</button>
+        <!-- <button class="tablinks" onclick="showInput(event, 'employee_update')">Update Employee</button> -->
+        <button class="tablinks" onclick="showInput(event, 'employee_delete')">Delete Employee</button>
+    </div>
+    <div id="employee_list" class="input">
+        <label for="employee_id">ID:</label>
+        <input type="text" id="employee_list_id" size="2" maxlength="4" />
+        <input type="button" value="Submit" onclick="listEmployee()" />
+    </div>
+    <div id="employee_add" class="input">
+        <table>
+            <tr>
+                <td><label for="add_input_firstname">Firstname:</label></td>
+                <td><input type="text" id="add_input_firstname" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_lastname">Lastname:</label></td>
+                <td><input type="text" id="add_input_lastname" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_birthdate">Birthdate:</label></td>
+                <td><input type="text" id="add_input_birthdate" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_gender">Gender:</label></td>
+                <td><input type="text" id="add_input_gender" size="1" maxlength="1" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_company">Company:</label></td>
+                <td><input type="text" id="add_input_company" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_department">Department:</label></td>
+                <td><input type="text" id="add_input_department" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_employerid">EmployerID:</label></td>
+                <td><input type="text" id="add_input_employerid" /></td>
+            </tr>
+            <tr>
+                <td><label for="add_input_email">Email:</label></td>
+                <td><input type="text" id="add_input_email" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="button" value="Reset" />
+                    <input type="button" value="Send" onclick="addEmployee()" /></td>
+            </tr>
+        </table>
+    </div>
+    <div id="employee_update" class="input">
+        <table>
+            <tr>
+                <td><label for="update_input_firstname">Firstname:</label></td>
+                <td><input type="text" id="update_input_firstname" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_lastname">Lastname:</label></td>
+                <td><input type="text" id="update_input_lastname" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_birthdate">Birthdate:</label></td>
+                <td><input type="text" id="update_input_birthdate" size="1" maxlength="1" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_gender">Gender:</label></td>
+                <td><input type="text" id="update_input_gender" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_company">Company:</label></td>
+                <td><input type="text" id="update_input_company" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_department">Department:</label></td>
+                <td><input type="text" id="update_input_department" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_employerid">EmployerID:</label></td>
+                <td><input type="text" id="update_input_employerid" /></td>
+            </tr>
+            <tr>
+                <td><label for="update_input_email">Email:</label></td>
+                <td><input type="text" id="update_input_email" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="button" value="Reset" />
+                    <input type="button" value="Send" /></td>
+            </tr>
+        </table>
+    </div>
+    <div id="employee_delete" class="input">
+        <label for="employee_delete_id">ID:</label>
+        <input type="text" id="employee_delete_id" size="2" maxlength="4" />
+        <input type="button" value="Submit" onclick="deleteEmployee()" />
+    </div>
+    <br>
+    <br>
+    <table class="output">
+        <thead>
+            <tr class="header">
+                <td>ID</td>
+                <td>Firstname</td>
+                <td>Lastname</td>
+                <td>Birthdate</td>
+                <td>Gender</td>
+                <td>Company</td>
+                <td>Department</td>
+                <td>Employerid</td>
+                <td>Email</td>
+            </tr>
+        </thead>
+        <tbody id="output" class="output">
+        </tbody>
+    </table>
 </body>
 
 </html>
